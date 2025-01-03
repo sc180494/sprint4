@@ -23,10 +23,7 @@ df_largo_agrupado <- df_largo %>% group_by(cyl, gear, tipo_transmision, medida) 
 
 df_ancho <- df_largo_agrupado %>% pivot_wider(names_from = medida, values_from = valor)
 
-print(df_filtrado)
-
 print(df_ordenado)
-print(df_agregado)
 print(df_unido)
 print(df_largo)
 print(df_ancho)

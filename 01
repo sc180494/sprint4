@@ -1,0 +1,32 @@
+library(dplyr)
+library(tidyr)
+library(readr)
+
+data(mtcars)
+df <- as.data.frame(mtcars)
+
+df <- df %>% select(mpg, cyl, hp, gear) %>% filter(cyl > 4)
+
+df_ordenado <- df %>% arrange(desc(hp)) %>%
+  rename(consumo = mpg, potencia = hp)
+
+df_ordenado <- df_ordenado %>% mutate(eficiencia = consumo / potencia) %>%
+  group_by(cyl) %>% summarise(consumo_medio = mean(consumo), potencia_maxima = max(potencia))
+
+transmision_df <- data.frame(gear = c(3, 4, 5), tipo_transmision = c("Manual", "Automática", "Semiautomática"))
+
+df_unido <- df_ordenado %>% left_join(transmision_df, by = "gear")
+
+df_largo <- df_unido %>% pivot_longer(cols = c(consumo, potencia, eficiencia), names_to = "medida", values_to = "valor")
+
+df_largo_agrupado <- df_largo %>% group_by(cyl, gear, tipo_transmision, medida) %>% summarise(valor = mean(valor, na.rm = TRUE), .groups = "drop")
+
+df_ancho <- df_largo_agrupado %>% pivot_wider(names_from = medida, values_from = valor)
+
+print(df_filtrado)
+
+print(df_ordenado)
+print(df_agregado)
+print(df_unido)
+print(df_largo)
+print(df_ancho)
